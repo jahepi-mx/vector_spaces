@@ -1,0 +1,99 @@
+<html>
+<head>
+
+<script src="vector.js"></script>
+<script src="vectorutils.js"></script>
+<script src="vectorspace.js"></script>
+<script>
+
+var width = 500;
+var height = 500;
+var halfWidth = width * 0.5;
+var halfHeight = height * 0.5;
+var canvas;
+var context;
+var prevTime = 0;
+var utils = new VectorUtils();
+var yaw = 60;
+var pitch = 60;
+var left = false, right = false, down = false, up = false;
+var dirZVector = utils.getDirVector(30, 45);
+var space = new VectorSpace(new Vector(100, 100, 20), dirZVector);
+var newSpace = space.clone();
+
+window.onload = function() {
+    canvas = document.getElementById("canvas");
+    context = canvas.getContext("2d");
+    canvas.width = width;
+    canvas.height = height;
+    requestAnimationFrame(update);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+};
+
+function update(time) {
+    var dt = (time - prevTime) / 1000;
+    prevTime = time;
+
+    context.clearRect(0, 0, width, height);
+    
+    space.draw(context);
+    
+    if (left) {
+        newSpace.yaw(yaw * dt);
+    }
+
+    if (right) {
+        newSpace.yaw(yaw * dt);
+    }
+
+    if (down) {
+        newSpace.pitch(pitch * dt);
+    }
+
+    if (up) {
+        newSpace.pitch(pitch * dt);
+    }
+
+    newSpace.draw(context);
+
+    requestAnimationFrame(update);
+}
+
+function onKeyDown(e) {
+    if (e.key == "a") {
+        left = true;
+    }
+    if (e.key == "d") {
+        right = true;
+    }
+    if (e.key == "w") {
+        up = true;
+    }
+    if (e.key == "s") {
+        down = true;
+    }
+}
+
+function onKeyUp(e) {
+    if (e.key == "a") {
+        left = false;
+    }
+    if (e.key == "d") {
+        right = false;
+    }
+    if (e.key == "w") {
+        up = false;
+    }
+    if (e.key == "s") {
+        down = false;
+    }
+}
+
+</script>
+
+</head>
+<body>
+    <canvas id="canvas" />
+</body>
+</html>
